@@ -1,0 +1,38 @@
+{
+  "name": "overload-protection",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "tap test",
+    "cov": "tap --coverage-report=html test",
+    "lint": "standard"
+  },
+  "keywords": [],
+  "author": "David Mark Clements <huperekchuno@googlemail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "express": "^4.16.2",
+    "fastify": "^0.33.0",
+    "koa": "^2.3.0",
+    "koa-router": "^7.2.1",
+    "restify": "^6.3.1",
+    "standard": "^10.0.3",
+    "tap": "^10.7.2"
+  },
+  "dependencies": {
+    "loopbench": "^1.2.0"
+  },
+  "directories": {
+    "lib": "lib",
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/davidmarkclements/overload-protection.git"
+  },
+  "bugs": {
+    "url": "https://github.com/davidmarkclements/overload-protection/issues"
+  },
+  "homepage": "https://github.com/davidmarkclements/overload-protection#readme",
+  "description": "Load detection and shedding capabilities for http, express, restify, fastify and koa"
+}
