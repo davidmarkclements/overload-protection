@@ -12,20 +12,18 @@ var frameworks = {
 
 var defaults = {
   errorPropagationMode: false,
-  production: false,
-  integrate: 'http',
-  clientRetryWait: 10,
+  clientRetrySecs: 1,
   sampleInterval: 5,
   maxEventLoopDelay: 42,
   maxHeapUsedBytes: 0,
   maxRssBytes: 0
 }
 
-
 function protect (framework, opts) {
-  framework = framework || 'http'
   opts = Object.assign({}, defaults, opts)
-
+  if (typeof framework === 'undefined') {
+    throw Error('Please specify a framework')
+  }
   if (!(framework in frameworks)) {
     throw Error(opts.integrate + ' not supported.')
   }
@@ -49,6 +47,10 @@ function protect (framework, opts) {
   profiler.eventLoopOverload = false
   profiler.heapOverload = false
   profiler.rssOverload = false
+
+  profiler.maxEventLoopDelay = opts.maxEventLoopDelay
+  profiler.maxHeapUsedBytes = opts.maxHeapUsedBytes
+  profiler.maxRssBytes = opts.maxRssBytes
 
   profiler.on('load', apiMap)
   profiler.on('unload', apiMap)
