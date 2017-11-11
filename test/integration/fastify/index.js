@@ -1,10 +1,9 @@
 'use strict'
 
-var path = require('path')
 var app = require('fastify')()
 var protect = require('../../..')('fastify')
 
-var { is, same, comment } = require('tap')
+var { is, comment } = require('tap')
 
 comment('fastify integration')
 
@@ -20,7 +19,6 @@ app.listen(3000, function () {
   req.on('response', function (res) {
     is(res.statusCode, 503)
     is(res.headers['retry-after'], '10')
-    
 
     setTimeout(function () {
       is(protect.overload, false)

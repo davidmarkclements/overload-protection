@@ -4,7 +4,6 @@ var http = require('http')
 var server = http.createServer(serve)
 var protect = require('../..')('http')
 
-
 function sleep (msec) {
   var start = Date.now()
   while (Date.now() - start < msec) {}

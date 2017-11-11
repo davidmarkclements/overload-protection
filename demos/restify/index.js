@@ -1,6 +1,5 @@
 'use strict'
 
-var path = require('path')
 var app = require('restify').createServer({
   name: 'myapp',
   version: '1.0.0'

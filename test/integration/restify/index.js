@@ -1,13 +1,12 @@
 'use strict'
 
-var path = require('path')
 var app = require('restify').createServer({
   name: 'myapp',
   version: '1.0.0'
 })
 var protect = require('../../..')('restify')
 
-var { is, same, comment } = require('tap')
+var { is, comment } = require('tap')
 
 comment('restify integration')
 
@@ -23,7 +22,6 @@ app.listen(3000, function () {
   req.on('response', function (res) {
     is(res.statusCode, 503)
     is(res.headers['retry-after'], '10')
-    
 
     setTimeout(function () {
       is(protect.overload, false)

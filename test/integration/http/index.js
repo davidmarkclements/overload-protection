@@ -3,7 +3,7 @@
 var http = require('http')
 var server = http.createServer(serve)
 var protect = require('../../..')('http')
-var { is, same, comment } = require('tap')
+var { is, comment } = require('tap')
 
 comment('core http integration')
 
@@ -23,7 +23,6 @@ server.listen(3000, function () {
   req.on('response', function (res) {
     is(res.statusCode, 503)
     is(res.headers['retry-after'], '10')
-    
 
     setTimeout(function () {
       is(protect.overload, false)

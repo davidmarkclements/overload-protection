@@ -1,8 +1,5 @@
 'use strict'
 
-'use strict'
-
-var path = require('path')
 var Koa = require('koa')
 var Router = require('koa-router')
 var protect = require('../..')('koa')
@@ -44,9 +41,7 @@ app.listen(3000, function () {
   sleep(500)
 })
 
-
 function sleep (msec) {
   var start = Date.now()
   while (Date.now() - start < msec) {}
 }
-

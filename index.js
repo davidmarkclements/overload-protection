@@ -65,7 +65,7 @@ function protect (framework, opts) {
     var heapUsed = mem.heapUsed
     var rss = mem.rss
     profiler.heapOverload = (maxHeapUsedBytes > 0 && heapUsed > maxHeapUsedBytes)
-    profiler.rssOverload = (maxRssBytes > 0 && rss > maxRssBytes) 
+    profiler.rssOverload = (maxRssBytes > 0 && rss > maxRssBytes)
     update()
   }
 

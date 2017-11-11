@@ -1,6 +1,5 @@
 'use strict'
 
-var path = require('path')
 var app = require('fastify')()
 var protect = require('../..')('fastify')
 

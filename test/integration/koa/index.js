@@ -1,9 +1,10 @@
 'use strict'
-var path = require('path')
 var Koa = require('koa')
 var Router = require('koa-router')
 var protect = require('../../..')('koa')
-var { is, same, comment } = require('tap')
+var { is, comment } = require('tap')
+
+comment('koa integration')
 
 var router = new Router()
 var app = new Koa()
@@ -21,7 +22,6 @@ app.listen(3000, function () {
   req.on('response', function (res) {
     is(res.statusCode, 503)
     is(res.headers['retry-after'], '10')
-    
 
     setTimeout(function () {
       is(protect.overload, false)
