@@ -33,46 +33,32 @@ function protect (framework, opts) {
     limit: opts.maxEventLoopDelay
   })
 
+  eventLoopProfiler.on('load', update)
+  eventLoopProfiler.on('unload', update)
+
   var maxHeapUsedBytes = opts.maxHeapUsedBytes
   var maxRssBytes = opts.maxRssBytes
-  //be sure to create profiler first, so it registers
-  //in the timer queue before our timer, then our timer
-  //can rely on the profiler.overLimit value
-  var profiler = Object.create(eventLoopProfiler)
 
   var timer = (maxRssBytes > 0 || maxRssBytes > 0) &&
     setInterval(checkMemory, opts.sampleInterval).unref()
 
-  profiler.overload = false
-  profiler.eventLoopOverload = false
-  profiler.heapOverload = false
-  profiler.rssOverload = false
+  var profiler = {
+    overload: false,
+    eventLoopOverload: false,
+    heapOverload: false,
+    rssOverload: false,
+    eventLoopDelay: eventLoopProfiler.delay,
+    maxEventLoopDelay: opts.maxEventLoopDelay,
+    maxHeapUsedBytes: opts.maxHeapUsedBytes,
+    maxRssBytes: opts.maxRssBytes,
+    stop: stop
+  }
 
-  profiler.maxEventLoopDelay = opts.maxEventLoopDelay
-  profiler.maxHeapUsedBytes = opts.maxHeapUsedBytes
-  profiler.maxRssBytes = opts.maxRssBytes
+  var integrate = frameworks[framework](opts, profiler)
+  Object.setPrototypeOf(integrate, profiler)
+  Object.setPrototypeOf(profiler, Function.prototype)
 
-  profiler.on('load', apiMap)
-  profiler.on('unload', apiMap)
-
-  profiler.stop = stop
-
-  var integration = frameworks[framework](opts, profiler)
-
-  // make the profiler the proto of the integration function,
-  // so we have a function which also has all the (live) properties
-  // of the profiler
-  Object.setPrototypeOf(integration, profiler)
-
-  // since the prototype of the integration Function is overwritten, it 
-  // loses function methods, like .call. This reintroduces the function methods, 
-  // without modifying shared prototypes (e.g. we create an object and copy properties)
-  Object.setPrototypeOf(eventLoopProfiler, Object.assign(
-    Object.create(Function.prototype), 
-    Object.getPrototypeOf(eventLoopProfiler)
-  ))
-
-  return integration
+  return integrate
 
   function checkMemory () {
     var mem = process.memory()
@@ -80,18 +66,15 @@ function protect (framework, opts) {
     var rss = mem.rss
     profiler.heapOverload = (maxHeapUsedBytes > 0 && heapUsed > maxHeapUsedBytes)
     profiler.rssOverload = (maxRssBytes > 0 && rss > maxRssBytes) 
-    process.nextTick(setOverload)
+    update()
   }
 
-  function setOverload () {
+  function update () {
+    profiler.eventLoopOverload = eventLoopProfiler.overLimit
+    profiler.eventLoopDelay = eventLoopProfiler.delay
     profiler.overload = profiler.eventLoopOverload ||
       profiler.heapOverload ||
       profiler.rssOverload
-  }
-
-  function apiMap () {
-    profiler.eventLoopOverload = profiler.overLimit
-    setOverload() // may not have to do this here, since the 
   }
 
   function stop () {

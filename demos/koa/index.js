@@ -25,7 +25,7 @@ app.listen(3000, function () {
     console.log('retry after', res.headers['retry-after'])
 
     setTimeout(function () {
-      console.log('overLimit after load', protect.overLimit)
+      console.log('protect.overload after load', protect.overload)
       var req = require('http').get('http://localhost:3000')
 
       req.on('response', function (res) {
@@ -38,7 +38,7 @@ app.listen(3000, function () {
   }).end()
 
   setImmediate(function () {
-    console.log('delay after active sleeping', protect.delay)
+    console.log('eventLoopDelay after active sleeping', protect.eventLoopDelay)
   })
 
   sleep(500)

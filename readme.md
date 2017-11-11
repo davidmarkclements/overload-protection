@@ -187,9 +187,7 @@ has an `overload` property. This begins as `false`. If any of the thresholds hav
 been passed this will be set to `true`. Once all metrics are below their thresholds
 this would become `false` again.
 
-This allows for any heavy load detection required outside of a framework.
-
-Alias: `overLimit` 
+This allows for any heavy load detection required outside of a framework. 
 
 ### profiler.eventLoopOverload
 
@@ -218,15 +216,13 @@ this would become `false` again.
 
 This allows for any heap used threshold detection necessary outside of a framework.
 
-### instance.delay
+### instance.eventLoopDelay
 
 The delay in milliseconds (with additional decimal precision) since the last sample.
 
 ### instance.maxEventLoopDelay
 
 Corresponds to the `opts.maxEventLoopDelay` option.
-
-Alias: `instance.limit`
 
 ### instance.maxHeapUsedBytes
 

@@ -31,7 +31,7 @@ app.listen(3000, function () {
   }).end()
 
   setImmediate(function () {
-    console.log('delay after active sleeping', protect.delay)
+    console.log('eventLoopDelay after active sleeping', protect.eventLoopDelay)
   })
 
   sleep(500)
