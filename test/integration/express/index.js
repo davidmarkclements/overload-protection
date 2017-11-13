@@ -17,16 +17,14 @@ test('sends 503 when event loop is overloaded, per maxEventLoopDelay', function 
   })
 
   var app = express()
-  app.use(function (req, res, next) {
-    sleep(50)
-    next()
-  })
   app.use(protect)
-  var server = http.createServer(app)
+  var server = http.createServer(function (req, res) {
+    sleep(500)
+    app(req, res)
+  })
 
   server.listen(3000, function () {
     var req = http.get('http://localhost:3000')
-
     req.on('response', function (res) {
       t.is(res.statusCode, 503)
       protect.stop()

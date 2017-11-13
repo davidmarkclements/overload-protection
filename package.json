@@ -5,6 +5,7 @@
   "scripts": {
     "test": "tap test",
     "lint": "standard",
+    "ci": "npm run lint && npm test",
     "cov": "tap --coverage-report=html test",
     "cov-ascii": "tap --cov test"
   },

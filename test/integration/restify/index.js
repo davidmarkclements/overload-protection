@@ -6,9 +6,8 @@ var restify = require('restify')
 var protection = require('../../..')
 var test = require('tap').test
 
-function sleep (msec) {
-  var start = Date.now()
-  while (Date.now() - start < msec) {}
+function block (n) {
+  while (n--) { JSON.parse(JSON.stringify(require('../../../package.json'))) }
 }
 
 test('sends 503 when event loop is overloaded, per maxEventLoopDelay', function (t) {
@@ -17,16 +16,12 @@ test('sends 503 when event loop is overloaded, per maxEventLoopDelay', function 
   })
 
   var server = restify.createServer({name: 'myapp', version: '1.0.0'})
-  server.use(function (req, res, next) {
-    sleep(50)
-    next()
-  })
   server.use(protect)
   server.get('/', function (req, res) { res.end('content') })
 
   server.listen(3000, function () {
     var req = http.get('http://localhost:3000')
-
+    block(50000)
     req.on('response', function (res) {
       t.is(res.statusCode, 503)
       protect.stop()
