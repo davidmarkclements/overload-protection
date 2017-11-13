@@ -11,6 +11,7 @@ var frameworks = {
 }
 
 var defaults = {
+  production: process.env.NODE_ENV === 'production',
   errorPropagationMode: false,
   clientRetrySecs: 1,
   sampleInterval: 5,
@@ -27,27 +28,43 @@ function protect (framework, opts) {
   if (!(framework in frameworks)) {
     throw Error(opts.integrate + ' not supported.')
   }
+  if (opts.maxRssBytes <= 0 && opts.maxHeapUsedBytes <= 0 && opts.eventLoopDelay <= 0) {
+    throw Error('At least one threshold (eventLoopDelay, maxHeapUsedBytes, maxRssBytes) should be above 0')
+  }
+  var update = (opts.maxEventLoopDelay > 0)
+    ? function update () {
+      profiler.eventLoopOverload = eventLoopProfiler.overLimit
+      profiler.eventLoopDelay = eventLoopProfiler.delay
+      profiler.overload = profiler.eventLoopOverload ||
+          profiler.heapUsedOverload ||
+          profiler.rssOverload
+    }
+    : function update () {
+      profiler.overload = profiler.heapUsedOverload || profiler.rssOverload
+    }
 
-  var eventLoopProfiler = loopbench({
-    sampleInterval: opts.sampleInterval,
-    limit: opts.maxEventLoopDelay
-  })
+  if (opts.maxEventLoopDelay > 0) {
+    var eventLoopProfiler = loopbench({
+      sampleInterval: opts.sampleInterval,
+      limit: opts.maxEventLoopDelay
+    })
 
-  eventLoopProfiler.on('load', update)
-  eventLoopProfiler.on('unload', update)
+    eventLoopProfiler.on('load', update)
+    eventLoopProfiler.on('unload', update)
+  }
 
   var maxHeapUsedBytes = opts.maxHeapUsedBytes
   var maxRssBytes = opts.maxRssBytes
 
-  var timer = (maxRssBytes > 0 || maxRssBytes > 0) &&
+  var timer = (maxHeapUsedBytes > 0 || maxRssBytes > 0) &&
     setInterval(checkMemory, opts.sampleInterval).unref()
 
   var profiler = {
     overload: false,
     eventLoopOverload: false,
-    heapOverload: false,
+    heapUsedOverload: false,
     rssOverload: false,
-    eventLoopDelay: eventLoopProfiler.delay,
+    eventLoopDelay: 0,
     maxEventLoopDelay: opts.maxEventLoopDelay,
     maxHeapUsedBytes: opts.maxHeapUsedBytes,
     maxRssBytes: opts.maxRssBytes,
@@ -55,30 +72,27 @@ function protect (framework, opts) {
   }
 
   var integrate = frameworks[framework](opts, profiler)
-  Object.setPrototypeOf(integrate, profiler)
-  Object.setPrototypeOf(profiler, Function.prototype)
+  if (Object.setPrototypeOf) {
+    Object.setPrototypeOf(profiler, Function.prototype)
+    Object.setPrototypeOf(integrate, profiler)
+  } else {
+    profiler.__proto__ = Function.prototype // eslint-disable-line
+    integrate.__proto__ = profiler // eslint-disable-line
+  }
 
   return integrate
 
   function checkMemory () {
-    var mem = process.memory()
+    var mem = process.memoryUsage()
     var heapUsed = mem.heapUsed
     var rss = mem.rss
-    profiler.heapOverload = (maxHeapUsedBytes > 0 && heapUsed > maxHeapUsedBytes)
+    profiler.heapUsedOverload = (maxHeapUsedBytes > 0 && heapUsed > maxHeapUsedBytes)
     profiler.rssOverload = (maxRssBytes > 0 && rss > maxRssBytes)
     update()
   }
 
-  function update () {
-    profiler.eventLoopOverload = eventLoopProfiler.overLimit
-    profiler.eventLoopDelay = eventLoopProfiler.delay
-    profiler.overload = profiler.eventLoopOverload ||
-      profiler.heapOverload ||
-      profiler.rssOverload
-  }
-
   function stop () {
-    eventLoopProfiler.stop()
+    if (eventLoopProfiler) eventLoopProfiler.stop()
     clearInterval(timer)
   }
 }

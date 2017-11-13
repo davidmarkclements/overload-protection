@@ -27,6 +27,7 @@ options.
 
 ```js
 const protectCfg = {
+  production: process.env.NODE_ENV === 'production', // if production is false, detailed error messages are exposed to the client
   clientRetrySecs: 1, // Client-Retry header, in seconds (0 to disable) [default 1]
   sampleInterval: 5, // sample rate, milliseconds [default 5]
   maxEventLoopDelay: 42, // maximum detected delay between event loop ticks [default 42]
@@ -126,6 +127,12 @@ The `opts` argument is optional, as are all properties.
 Options (particularly thresholds) are quite sensitive and highly relevant on 
 a case by case basis. Possible options are as follows:
 
+#### production: process.env.NODE_ENV === 'production'
+
+The `production` option determines whether the client receives an error message 
+detailing the surpassed threshold(s). (It may also be used in future for other such
+good practices or performance trade-offs). 
+
 #### clientRetrySecs: 1
 
 By default, `overload-protection` will add a header to the 503 response
@@ -145,7 +152,9 @@ an interval timer (which is our sampler) will be delayed by the amount
 of time the event loop was stalled for while the thread processed synchronous 
 work. We can measure this with timestamp comparison. This option sets a threshold
 for the maximum amount of stalling between intervals we'll accept before our
-servive begins responding with 503 codes to requests. Defaults to 42 milliseconds. 
+service begins responding with 503 codes to requests. Defaults to 42 milliseconds.
+
+When set to 0 this threshold will be disabled. 
 
 #### maxHeapUsedBytes: 0
 
@@ -198,10 +207,10 @@ this would become `false` again.
 
 This allows for any event loop delay detection necessary outside of a framework.
 
-### profiler.heapOverload
+### profiler.heapUsedOverload
 
 The returned instance (which in many cases is passed as middleware to `app.use`), 
-has a `heapOverload` property. This begins as `false`. If the `maxHeapUsedBytes`
+has a `heapUsedOverload` property. This begins as `false`. If the `maxHeapUsedBytes`
 threshold is passed this will be set to `true`. Once it's below the configured threshold
 this would become `false` again.
 
@@ -219,6 +228,9 @@ This allows for any heap used threshold detection necessary outside of a framewo
 ### instance.eventLoopDelay
 
 The delay in milliseconds (with additional decimal precision) since the last sample.
+
+If `maxEventLoopDelay` is 0, the event loop is not measured, so `eventLoopDelay` will always
+be 0 in that case.
 
 ### instance.maxEventLoopDelay
 
@@ -245,7 +257,6 @@ Corresponds to the `opts.maxRssBytes` option.
 - [restify](https://github.com/restify/node-restify): REST framework
 - [standard](https://github.com/standard/standard): JavaScript Standard Style
 - [tap](https://github.com/tapjs/node-tap): A Test-Anything-Protocol library
-
 
 ## License
 

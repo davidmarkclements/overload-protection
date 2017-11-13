@@ -4,10 +4,12 @@
   "main": "index.js",
   "scripts": {
     "test": "tap test",
+    "lint": "standard",
     "cov": "tap --coverage-report=html test",
-    "lint": "standard"
+    "cov-ascii": "tap --cov test"
   },
-  "keywords": [],
+  "pre-commit": [ "test", "lint"],
+  "keywords": ["load shedding", "overload protection", "production monitoring", "503", "Service Unavailable", "Server Unavailable", "HTTP 503", "heavy load", "load", "protection", "shedding", "express", "fastify", "http", "koa", "restify"],
   "author": "David Mark Clements <huperekchuno@googlemail.com>",
   "license": "MIT",
   "devDependencies": {
@@ -15,6 +17,7 @@
     "fastify": "^0.33.0",
     "koa": "^2.3.0",
     "koa-router": "^7.2.1",
+    "pre-commit": "^1.2.2",
     "restify": "^6.3.1",
     "standard": "^10.0.3",
     "tap": "^10.7.2"
