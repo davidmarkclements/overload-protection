@@ -117,6 +117,9 @@ npm test
 
 ## Benchmark
 
+The overhead of using `overload-protection` is minimal, run the benchmarks to conduct 
+comparative profiling of using `overload-protection` versus not using it for each supported framework.  
+
 ```sh
 npm run benchmarks
 ```

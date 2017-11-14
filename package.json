@@ -5,7 +5,7 @@
   "scripts": {
     "test": "tap test",
     "lint": "standard",
-    "ci": "npm run lint && npm test",
+    "ci": "npm run lint && npm run cov-ascii",
     "cov": "tap --coverage-report=html test",
     "cov-ascii": "tap --cov test",
     "benchmarks": "ls benchmarks | while read l; do node benchmarks/$l; done"
