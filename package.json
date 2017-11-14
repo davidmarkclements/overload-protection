@@ -5,9 +5,9 @@
   "scripts": {
     "test": "tap test",
     "lint": "standard",
-    "ci": "npm run lint && npm run cov-ascii",
-    "cov": "tap --coverage-report=html test",
-    "cov-ascii": "tap --cov test",
+    "ci": "npm run lint && npm run cov",
+    "cov": "tap --cov test",
+    "covr": "tap --coverage-report=html test",
     "benchmarks": "ls benchmarks | while read l; do node benchmarks/$l; done"
   },
   "pre-commit": [
