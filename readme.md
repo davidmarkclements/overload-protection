@@ -1,6 +1,6 @@
 # overload-protection 
 
-Load detection and shedding capabilities for http, express, restify, fastify and koa
+Load detection and shedding capabilities for http, express, restify, and koa
 
 [![Build Status](https://travis-ci.org/davidmarkclements/overload-protection.svg?branch=master)](https://travis-ci.org/davidmarkclements/overload-protection)
 [![Coverage Status](https://coveralls.io/repos/github/davidmarkclements/overload-protection/badge.svg)](https://coveralls.io/github/davidmarkclements/overload-protection)
@@ -58,7 +58,7 @@ first. In default mode this means `overload-protection` will take over the respo
 and prevent any other middleware from executing (thus taking further potential pressure off
 of the process).
 
-Restify, Fastify, and Koa all work in much the same way, call the `overload-protection`
+Restify, and Koa all work in much the same way, call the `overload-protection`
 module with the name of the framework, a config object and pass the resulting `protect`
 instance to `app.use` – e.g. Koa would be:
 
@@ -131,7 +131,6 @@ npm run benchmarks
 The `framework` argument is non-optional. It's a string and may be one of:
 
 * express
-* fastify
 * koa
 * restify
 * http
@@ -266,7 +265,6 @@ Corresponds to the `opts.maxRssBytes` option.
 
 - [autocannon](https://github.com/mcollina/autocannon): Fast HTTP benchmarking tool written in Node.js
 - [express](https://github.com/expressjs/express): Fast, unopinionated, minimalist web framework
-- [fastify](https://github.com/fastify/fastify): Fast and low overhead web framework, for Node.js
 - [koa](https://github.com/koajs/koa): Koa web app framework
 - [koa-router](https://github.com/alexmingoia/koa-router): Router middleware for koa. Provides RESTful resource routing.
 - [pre-commit](https://github.com/observing/pre-commit): Automatically install pre-commit hooks for your npm modules.

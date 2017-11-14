@@ -6,7 +6,6 @@ var frameworks = {
   express: require('./lib/express'),
   http: require('./lib/http'),
   koa: require('./lib/koa'),
-  fastify: require('./lib/fastify'),
   restify: require('./lib/restify')
 }
 
