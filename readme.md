@@ -3,7 +3,7 @@
 Load detection and shedding capabilities for http, express, restify, fastify and koa
 
 [![Build Status](https://travis-ci.org/davidmarkclements/overload-protection.svg?branch=master)](https://travis-ci.org/davidmarkclements/overload-protection)
-[![codecov](https://codecov.io/gh/davidmarkclements/overload-protection/branch/master/graph/badge.svg)](https://codecov.io/gh/davidmarkclements/overload-protection)
+[![Coverage Status](https://coveralls.io/repos/github/davidmarkclements/overload-protection/badge.svg)](https://coveralls.io/github/davidmarkclements/overload-protection)
 [![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
 
 
@@ -264,10 +264,12 @@ Corresponds to the `opts.maxRssBytes` option.
 
 ## Dev Dependencies
 
+- [autocannon](https://github.com/mcollina/autocannon): Fast HTTP benchmarking tool written in Node.js
 - [express](https://github.com/expressjs/express): Fast, unopinionated, minimalist web framework
 - [fastify](https://github.com/fastify/fastify): Fast and low overhead web framework, for Node.js
 - [koa](https://github.com/koajs/koa): Koa web app framework
 - [koa-router](https://github.com/alexmingoia/koa-router): Router middleware for koa. Provides RESTful resource routing.
+- [pre-commit](https://github.com/observing/pre-commit): Automatically install pre-commit hooks for your npm modules.
 - [restify](https://github.com/restify/node-restify): REST framework
 - [standard](https://github.com/standard/standard): JavaScript Standard Style
 - [tap](https://github.com/tapjs/node-tap): A Test-Anything-Protocol library
