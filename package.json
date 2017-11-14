@@ -7,13 +7,35 @@
     "lint": "standard",
     "ci": "npm run lint && npm test",
     "cov": "tap --coverage-report=html test",
-    "cov-ascii": "tap --cov test"
+    "cov-ascii": "tap --cov test",
+    "benchmarks": "ls benchmarks | while read l; do node benchmarks/$l; done"
   },
-  "pre-commit": [ "test", "lint"],
-  "keywords": ["load shedding", "overload protection", "production monitoring", "503", "Service Unavailable", "Server Unavailable", "HTTP 503", "heavy load", "load", "protection", "shedding", "express", "fastify", "http", "koa", "restify"],
+  "pre-commit": [
+    "test",
+    "lint"
+  ],
+  "keywords": [
+    "load shedding",
+    "overload protection",
+    "production monitoring",
+    "503",
+    "Service Unavailable",
+    "Server Unavailable",
+    "HTTP 503",
+    "heavy load",
+    "load",
+    "protection",
+    "shedding",
+    "express",
+    "fastify",
+    "http",
+    "koa",
+    "restify"
+  ],
   "author": "David Mark Clements <huperekchuno@googlemail.com>",
   "license": "MIT",
   "devDependencies": {
+    "autocannon": "^0.16.5",
     "express": "^4.16.2",
     "fastify": "^0.33.0",
     "koa": "^2.3.0",

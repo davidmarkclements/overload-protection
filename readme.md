@@ -110,6 +110,12 @@ npm install
 npm test
 ```
 
+## Benchmark
+
+```sh
+npm run benchmarks
+```
+
 ## API
 
 ### require('overload-protection') => (framework, opts) => instance
