@@ -2,6 +2,11 @@
 
 Load detection and shedding capabilities for http, express, restify, fastify and koa
 
+[![Build Status](https://travis-ci.org/davidmarkclements/overload-protection.svg?branch=master)](https://travis-ci.org/davidmarkclements/overload-protection)
+[![codecov](https://codecov.io/gh/davidmarkclements/overload-protection/branch/master/graph/badge.svg)](https://codecov.io/gh/davidmarkclements/overload-protection)
+[![JavaScript Style Guide](https://img.shields.io/badge/code_style-standard-brightgreen.svg)](https://standardjs.com)
+
+
 ## About
 
 `overload-protection` provides integration for your framework of choice.
