@@ -277,3 +277,7 @@ Corresponds to the `opts.maxRssBytes` option.
 ## License
 
 MIT
+
+## Acknowledgements
+
+Kindly sponsored by [nearForm](http://nearform.com)
