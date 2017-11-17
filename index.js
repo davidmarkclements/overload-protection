@@ -16,7 +16,8 @@ var defaults = {
   sampleInterval: 5,
   maxEventLoopDelay: 42,
   maxHeapUsedBytes: 0,
-  maxRssBytes: 0
+  maxRssBytes: 0,
+  logging: false
 }
 
 function protect (framework, opts) {

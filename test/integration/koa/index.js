@@ -63,7 +63,7 @@ test('sends 503 when heap used threshold is passed, as per maxHeapUsedBytes', fu
   })
 })
 
-test('sends 503 when heap used threshold is passed, as per maxRssBytes', function (t) {
+test('sends 503 when rss threshold is passed, as per maxRssBytes', function (t) {
   var memoryUsage = process.memoryUsage
   process.memoryUsage = function () {
     return {
@@ -461,6 +461,78 @@ test('resumes usual operation once load pressure is reduced under threshold', fu
           })
         }, 6)
       }).end()
+    }, 6)
+  })
+})
+
+test('if logging option is a string, when overloaded, writes log message using req.log as per level in string', function (t) {
+  var memoryUsage = process.memoryUsage
+  process.memoryUsage = function () {
+    return {
+      rss: 99999,
+      heapTotal: 9999,
+      heapUsed: 999,
+      external: 99
+    }
+  }
+  var protect = protection('koa', {
+    sampleInterval: 5,
+    maxEventLoopDelay: 0,
+    maxRssBytes: 40,
+    logging: 'warn'
+  })
+
+  var app = new Koa()
+  app.use(function (ctx, next) {
+    ctx.log = ctx.req.log = {
+      warn: function (msg) {
+        t.is(msg, 'Server experiencing heavy load: (rss)')
+        server.close()
+        protect.stop()
+        process.memoryUsage = memoryUsage
+        t.end()
+      }
+    }
+    return next()
+  })
+  app.use(protect)
+
+  var server = app.listen(3000, function () {
+    setTimeout(function () {
+      http.get('http://localhost:3000').end()
+    }, 6)
+  })
+})
+
+test('if logging option is a function, when overloaded calls the function with heavy load message', function (t) {
+  var memoryUsage = process.memoryUsage
+  process.memoryUsage = function () {
+    return {
+      rss: 99999,
+      heapTotal: 9999,
+      heapUsed: 999,
+      external: 99
+    }
+  }
+  var protect = protection('koa', {
+    sampleInterval: 5,
+    maxEventLoopDelay: 0,
+    maxRssBytes: 40,
+    logging: function (msg) {
+      t.is(msg, 'Server experiencing heavy load: (rss)')
+      server.close()
+      protect.stop()
+      process.memoryUsage = memoryUsage
+      t.end()
+    }
+  })
+
+  var app = new Koa()
+  app.use(protect)
+
+  var server = app.listen(3000, function () {
+    setTimeout(function () {
+      http.get('http://localhost:3000').end()
     }, 6)
   })
 })

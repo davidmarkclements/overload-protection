@@ -511,3 +511,80 @@ test('(callback api) resumes usual operation once load pressure is reduced under
     }, 6)
   })
 })
+
+test('if logging option is a string, when overloaded, writes log message using req.log as per level in string', function (t) {
+  var memoryUsage = process.memoryUsage
+  process.memoryUsage = function () {
+    return {
+      rss: 99999,
+      heapTotal: 9999,
+      heapUsed: 999,
+      external: 99
+    }
+  }
+  var protect = protection('http', {
+    sampleInterval: 5,
+    maxEventLoopDelay: 1,
+    maxRssBytes: 40,
+    maxHeapUsedBytes: 40,
+    logging: 'warn'
+  })
+
+  var server = http.createServer(function serve (req, res) {
+    req = {
+      log: {
+        warn: function (msg) {
+          t.is(msg, 'Server experiencing heavy load: (event loop, heap, rss)')
+          server.close()
+          protect.stop()
+          process.memoryUsage = memoryUsage
+          t.end()
+        }
+      }
+    }
+    if (protect(req, res) === true) return
+    res.end('content')
+  })
+
+  server.listen(3000, function () {
+    setTimeout(function () {
+      sleep(500)
+      http.get('http://localhost:3000').end()
+    }, 6)
+  })
+})
+
+test('if logging option is a function, when overloaded calls the function with heavy load message', function (t) {
+  var memoryUsage = process.memoryUsage
+  process.memoryUsage = function () {
+    return {
+      rss: 99999,
+      heapTotal: 9999,
+      heapUsed: 999,
+      external: 99
+    }
+  }
+  var protect = protection('http', {
+    sampleInterval: 5,
+    maxEventLoopDelay: 0,
+    maxRssBytes: 40,
+    logging: function (msg) {
+      t.is(msg, 'Server experiencing heavy load: (rss)')
+      server.close()
+      protect.stop()
+      process.memoryUsage = memoryUsage
+      t.end()
+    }
+  })
+
+  var server = http.createServer(function serve (req, res) {
+    if (protect(req, res) === true) return
+    res.end('content')
+  })
+
+  server.listen(3000, function () {
+    setTimeout(function () {
+      http.get('http://localhost:3000').end()
+    }, 6)
+  })
+})

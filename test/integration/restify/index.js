@@ -457,3 +457,77 @@ test('resumes usual operation once load pressure is reduced under threshold', fu
     }, 6)
   })
 })
+
+test('if logging option is a string, when overloaded, writes log message using req.log as per level in string', function (t) {
+  var memoryUsage = process.memoryUsage
+  process.memoryUsage = function () {
+    return {
+      rss: 99999,
+      heapTotal: 9999,
+      heapUsed: 999,
+      external: 99
+    }
+  }
+  var protect = protection('restify', {
+    sampleInterval: 5,
+    maxEventLoopDelay: 0,
+    maxRssBytes: 40,
+    logging: 'warn'
+  })
+
+  var server = restify.createServer({name: 'myapp', version: '1.0.0'})
+  server.use(function (req, res, next) {
+    req.log = {
+      warn: function (msg) {
+        t.is(msg, 'Server experiencing heavy load: (rss)')
+        server.close()
+        protect.stop()
+        process.memoryUsage = memoryUsage
+        t.end()
+      }
+    }
+    next()
+  })
+  server.use(protect)
+  server.get('/', function (req, res) { res.end('content') })
+
+  server.listen(3000, function () {
+    setTimeout(function () {
+      http.get('http://localhost:3000').end()
+    }, 6)
+  })
+})
+
+test('if logging option is a function, when overloaded calls the function with heavy load message', function (t) {
+  var memoryUsage = process.memoryUsage
+  process.memoryUsage = function () {
+    return {
+      rss: 99999,
+      heapTotal: 9999,
+      heapUsed: 999,
+      external: 99
+    }
+  }
+  var protect = protection('restify', {
+    sampleInterval: 5,
+    maxEventLoopDelay: 0,
+    maxRssBytes: 40,
+    logging: function (msg) {
+      t.is(msg, 'Server experiencing heavy load: (rss)')
+      server.close()
+      protect.stop()
+      process.memoryUsage = memoryUsage
+      t.end()
+    }
+  })
+
+  var server = restify.createServer({name: 'myapp', version: '1.0.0'})
+  server.use(protect)
+  server.get('/', function (req, res) { res.end('content') })
+
+  server.listen(3000, function () {
+    setTimeout(function () {
+      http.get('http://localhost:3000').end()
+    }, 6)
+  })
+})
