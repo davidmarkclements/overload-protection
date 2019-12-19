@@ -35,16 +35,16 @@
   "author": "David Mark Clements <huperekchuno@googlemail.com>",
   "license": "MIT",
   "devDependencies": {
-    "autocannon": "^0.16.5",
-    "express": "^4.16.2",
-    "koa": "^2.3.0",
-    "koa-router": "^7.2.1",
+    "express": "^4.17.1",
+    "koa": "^2.11.0",
+    "koa-router": "^7.4.0",
     "pre-commit": "^1.2.2",
-    "restify": "^6.3.1",
+    "restify": "^8.5.1",
     "standard": "^10.0.3",
     "tap": "^10.7.2"
   },
   "dependencies": {
+    "autocannon": "^4.4.1",
     "loopbench": "^1.2.0"
   },
   "directories": {
