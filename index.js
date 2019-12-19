@@ -17,7 +17,8 @@ var defaults = {
   maxEventLoopDelay: 42,
   maxHeapUsedBytes: 0,
   maxRssBytes: 0,
-  logging: false
+  logging: false,
+  logStatsOnReq: false
 }
 
 function protect (framework, opts) {
@@ -30,6 +31,9 @@ function protect (framework, opts) {
   }
   if (opts.maxRssBytes <= 0 && opts.maxHeapUsedBytes <= 0 && opts.eventLoopDelay <= 0) {
     throw Error('At least one threshold (eventLoopDelay, maxHeapUsedBytes, maxRssBytes) should be above 0')
+  }
+  if (opts.logStatsOnReq && opts.logging === false) {
+    throw Error('logStatsOnReq cannot be enabled unless logging is also enabled')
   }
   var update = (opts.maxEventLoopDelay > 0)
     ? function update () {

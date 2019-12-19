@@ -537,3 +537,73 @@ test('if logging option is a function, when overloaded calls the function with h
     }, 6)
   })
 })
+
+test('if logStatsOnReq is true and if logging option is a string, writes log message using req.log as per level in string for every request', function (t) {
+  var protect = protection('express', {
+    logging: 'info',
+    logStatsOnReq: true
+  })
+  t.plan(1)
+  var app = express()
+  app.use(function (req, res, next) {
+    req.log = {
+      info: function (msg) {
+        t.same(Object.keys(msg), [
+          'overload',
+          'eventLoopOverload',
+          'heapUsedOverload',
+          'rssOverload',
+          'eventLoopDelay',
+          'maxEventLoopDelay',
+          'maxHeapUsedBytes',
+          'maxRssBytes'
+        ])
+        server.close()
+        protect.stop()
+        t.end()
+      }
+    }
+    next()
+  })
+  app.use(protect)
+  app.get('/', function (req, res) { res.end('content') })
+  var server = http.createServer(app)
+
+  server.listen(3000, function () {
+    setTimeout(function () {
+      http.get('http://localhost:3000').end()
+    }, 6)
+  })
+})
+
+test('if logStatsOnReq is true and logging option is a function, calls the function with stats on every request', function (t) {
+  var protect = protection('express', {
+    logStatsOnReq: true,
+    logging: function (msg) {
+      t.same(Object.keys(msg), [
+        'overload',
+        'eventLoopOverload',
+        'heapUsedOverload',
+        'rssOverload',
+        'eventLoopDelay',
+        'maxEventLoopDelay',
+        'maxHeapUsedBytes',
+        'maxRssBytes'
+      ])
+      server.close()
+      protect.stop()
+      t.end()
+    }
+  })
+
+  var app = express()
+  app.use(protect)
+  app.get('/', function (req, res) { res.end('content') })
+  var server = http.createServer(app)
+
+  server.listen(3001, function () {
+    setTimeout(function () {
+      http.get('http://localhost:3001').end()
+    }, 6)
+  })
+})

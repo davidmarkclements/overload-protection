@@ -536,3 +536,69 @@ test('if logging option is a function, when overloaded calls the function with h
     }, 6)
   })
 })
+
+test('if logStatsOnReq is true and if logging option is a string, writes log message using req.log as per level in string for every request', function (t) {
+  var protect = protection('koa', {
+    logging: 'info',
+    logStatsOnReq: true
+  })
+  t.plan(1)
+  var app = new Koa()
+  app.use(function (ctx, next) {
+    ctx.log = ctx.req.log = {
+      info: function (msg) {
+        t.same(Object.keys(msg), [
+          'overload',
+          'eventLoopOverload',
+          'heapUsedOverload',
+          'rssOverload',
+          'eventLoopDelay',
+          'maxEventLoopDelay',
+          'maxHeapUsedBytes',
+          'maxRssBytes'
+        ])
+        server.close()
+        protect.stop()
+        t.end()
+      }
+    }
+    return next()
+  })
+  app.use(protect)
+
+  var server = app.listen(3000, function () {
+    setTimeout(function () {
+      http.get('http://localhost:3000').end()
+    }, 6)
+  })
+})
+
+test('if logStatsOnReq is true and logging option is a function, calls the function with stats on every request', function (t) {
+  var protect = protection('koa', {
+    logStatsOnReq: true,
+    logging: function (msg) {
+      t.same(Object.keys(msg), [
+        'overload',
+        'eventLoopOverload',
+        'heapUsedOverload',
+        'rssOverload',
+        'eventLoopDelay',
+        'maxEventLoopDelay',
+        'maxHeapUsedBytes',
+        'maxRssBytes'
+      ])
+      server.close()
+      protect.stop()
+      t.end()
+    }
+  })
+
+  var app = new Koa()
+  app.use(protect)
+
+  var server = app.listen(3001, function () {
+    setTimeout(function () {
+      http.get('http://localhost:3001').end()
+    }, 6)
+  })
+})

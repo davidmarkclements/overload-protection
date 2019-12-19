@@ -40,6 +40,8 @@ const protectCfg = {
   maxRssBytes: 0, // maximum rss size threshold (0 to disable) [default 0]
   errorPropagationMode: false // dictate behavior: take over the response 
                               // or propagate an error to the framework [default false]
+  logging: false, // set to string for log level or function to pass data to
+  logStatsOnReq: false // set to true to log stats on every requests
 }
 ```
 
@@ -224,6 +226,11 @@ the console methods, e.g. `logging: console.warn`.
 This is primarily for usage when `errorPropagationMode` is `false`. If `errorPropagationMode` 
 is set to `true`, we may want to instead log once the error has propagated to a handler.    
 
+#### logStatsOnReq: false
+
+Set `logStatsOnReq` to `true` log the profiled stats on every request. In order to use this option, the `logging` option must not be `false`. Bear in mind that using this option will
+add extra pressure on the event loop in itself, so use with caution.
+
 ### instance.overload
 
 The returned instance (which in many cases is passed as middleware to `app.use`), 
@@ -233,7 +240,7 @@ this would become `false` again.
 
 This allows for any heavy load detection required outside of a framework. 
 
-### profiler.eventLoopOverload
+### instance.eventLoopOverload
 
 The returned instance (which in many cases is passed as middleware to `app.use`), 
 has an `eventLoopOverload` property. This begins as `false`. If the `maxEventLoopDelay`
@@ -242,7 +249,7 @@ this would become `false` again.
 
 This allows for any event loop delay detection necessary outside of a framework.
 
-### profiler.heapUsedOverload
+### instance.heapUsedOverload
 
 The returned instance (which in many cases is passed as middleware to `app.use`), 
 has a `heapUsedOverload` property. This begins as `false`. If the `maxHeapUsedBytes`
@@ -251,7 +258,7 @@ this would become `false` again.
 
 This allows for any heap used threshold detection necessary outside of a framework.
 
-### profiler.rssOverload
+### instance.rssOverload
 
 The returned instance (which in many cases is passed as middleware to `app.use`), 
 has a `rssOverload` property. This begins as `false`. If the `maxRssBytes`

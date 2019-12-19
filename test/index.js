@@ -27,6 +27,15 @@ test('throws if all thresholds are disabled (set to 0)', function (t) {
   t.end()
 })
 
+test('throws if logStatsOnReq is true but logging is false', function (t) {
+  t.throws(function () {
+    protect('http', {
+      logStatsOnReq: true
+    })
+  })
+  t.end()
+})
+
 test('instance.stop ceases sampling', function (t) {
   var sI = global.setInterval
   var cI = global.clearInterval
