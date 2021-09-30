@@ -13,7 +13,7 @@ Load detection and shedding capabilities for http, express, restify, and koa
 
 If a threshold is crossed for a given metric, `overload-protection` 
 will send an HTTP 503 Service Unavailable response, with (by default) 
-a `Client-Retry` header, instructing the client (e.g. a browser or load balancer) to 
+a `Retry-After` header, instructing the client (e.g. a browser or load balancer) to 
 retry after a given amount of seconds.
 
 Current supported metrics are:
@@ -33,7 +33,7 @@ options.
 ```js
 const protectCfg = {
   production: process.env.NODE_ENV === 'production', // if production is false, detailed error messages are exposed to the client
-  clientRetrySecs: 1, // Client-Retry header, in seconds (0 to disable) [default 1]
+  clientRetrySecs: 1, // Retry-After header, in seconds (0 to disable) [default 1]
   sampleInterval: 5, // sample rate, milliseconds [default 5]
   maxEventLoopDelay: 42, // maximum detected delay between event loop ticks [default 42]
   maxHeapUsedBytes: 0, // maximum heap used threshold (0 to disable) [default 0]
@@ -151,7 +151,7 @@ good practices or performance trade-offs).
 #### clientRetrySecs: 1
 
 By default, `overload-protection` will add a header to the 503 response
-called `Client-Retry`. It's up to the client to honour this header, which
+called `Retry-After`. It's up to the client to honour this header, which
 instructs the client on how many seconds to wait between retries. 
 Defaults to 1 seconds.
 
