@@ -102,7 +102,7 @@ test('sends 503 when heap used threshold is passed, as per maxRssBytes', functio
   })
 })
 
-test('sends Client-Retry header as per clientRetrySecs', function (t) {
+test('sends Retry-After header as per clientRetrySecs', function (t) {
   var memoryUsage = process.memoryUsage
   process.memoryUsage = function () {
     return {
@@ -139,7 +139,7 @@ test('sends Client-Retry header as per clientRetrySecs', function (t) {
   })
 })
 
-test('does not set Client-Retry header when clientRetrySecs is 0', function (t) {
+test('does not set Retry-After header when clientRetrySecs is 0', function (t) {
   var memoryUsage = process.memoryUsage
   process.memoryUsage = function () {
     return {
