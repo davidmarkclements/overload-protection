@@ -35,6 +35,7 @@
   "author": "David Mark Clements <huperekchuno@googlemail.com>",
   "license": "MIT",
   "devDependencies": {
+    "autocannon": "^4.4.1",
     "express": "^4.17.1",
     "koa": "^2.11.0",
     "koa-router": "^7.4.0",
@@ -44,7 +45,6 @@
     "tap": "^10.7.2"
   },
   "dependencies": {
-    "autocannon": "^4.4.1",
     "loopbench": "^1.2.0"
   },
   "directories": {
